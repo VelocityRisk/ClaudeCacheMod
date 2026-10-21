@@ -1,0 +1,10 @@
+{
+  "name": "cache-timer-mod",
+  "private": true,
+  "description": "Claude Code cache timer mod: source and offline tests",
+  "license": "MIT",
+  "scripts": {
+    "test": "node tests/mock-harness.mjs && node tools/dollar-lint.mjs plugin/hooks/register.mjs",
+    "validate": "claude plugin validate plugin --strict"
+  }
+}

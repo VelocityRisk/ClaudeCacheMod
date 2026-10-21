@@ -1,0 +1,4 @@
+{
+  "description": "Claude Code cache timer mod",
+  "modules": ["./register.mjs"]
+}
