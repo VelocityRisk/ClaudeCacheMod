@@ -1,0 +1,84 @@
+{
+  "name": "cache-timer",
+  "version": "0.4.1",
+  "description": "Shows when the prompt cache expires, with an optional, tightly limited /keepwarm.",
+  "author": {
+    "name": "Velocity Risk Underwriters"
+  },
+  "userConfig": {
+    "style": {
+      "type": "string",
+      "title": "Cache timer style",
+      "description": "fuse (a draining bar), rule (a colored line above the prompt), or ember (a glyph beside the spinner)",
+      "options": [
+        "fuse",
+        "rule",
+        "ember"
+      ],
+      "default": "fuse"
+    },
+    "maxLines": {
+      "type": "number",
+      "title": "Band height",
+      "description": "Lines the timer may use above the prompt, 1 to 3",
+      "default": 2,
+      "min": 1,
+      "max": 3
+    },
+    "cacheTtl": {
+      "type": "string",
+      "title": "Cache lifetime",
+      "description": "auto detects it from Claude Code's usage reports (5 minutes or 1 hour). Choose 5m or 1h to pin it.",
+      "options": [
+        "auto",
+        "5m",
+        "1h"
+      ],
+      "default": "auto"
+    },
+    "debug": {
+      "type": "boolean",
+      "title": "Debug log lines",
+      "description": "Write diagnostic lines to the debug log (claude --debug-file)",
+      "default": false
+    },
+    "keepwarmEnabled": {
+      "type": "boolean",
+      "title": "Allow /keepwarm",
+      "description": "Lets /keepwarm send small pings that spend tokens to keep the cache alive while you are away. Off by default.",
+      "default": false
+    },
+    "keepwarmDefaultMinutes": {
+      "type": "number",
+      "title": "/keepwarm default minutes",
+      "description": "Duration when /keepwarm is run with no number",
+      "default": 30,
+      "min": 1,
+      "max": 90
+    },
+    "keepwarmMaxMinutes": {
+      "type": "number",
+      "title": "/keepwarm maximum minutes",
+      "description": "Longest single /keepwarm run. A session may use at most twice this in total.",
+      "default": 60,
+      "min": 1,
+      "max": 90
+    },
+    "keepwarmMaxPings": {
+      "type": "number",
+      "title": "/keepwarm maximum pings",
+      "description": "Most pings one /keepwarm run may send",
+      "default": 12,
+      "min": 1,
+      "max": 20
+    },
+    "keepwarmMaxSpendUsd": {
+      "type": "number",
+      "title": "/keepwarm maximum spend (USD)",
+      "description": "Stops /keepwarm once its pings have cost this much",
+      "default": 1,
+      "min": 0.1,
+      "max": 5
+    }
+  }
+}
