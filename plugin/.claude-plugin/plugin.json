@@ -1,6 +1,6 @@
 {
   "name": "cache-timer",
-  "version": "0.4.1",
+  "version": "0.1.0",
   "description": "Shows when the prompt cache expires, with an optional, tightly limited /keepwarm.",
   "author": {
     "name": "Velocity Risk Underwriters"
