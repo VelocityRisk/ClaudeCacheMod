@@ -1,0 +1,12 @@
+{
+  "name": "cache-timer",
+  "description": "Claude Code mod that shows when the prompt cache expires.",
+  "owner": { "name": "Velocity Risk Underwriters" },
+  "plugins": [
+    {
+      "name": "cache-timer",
+      "source": "./plugin",
+      "description": "Shows when the prompt cache expires, with an optional, tightly limited /keepwarm."
+    }
+  ]
+}
