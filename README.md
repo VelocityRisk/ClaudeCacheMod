@@ -28,17 +28,17 @@ timer does not appear. To remove it: `/plugin uninstall cache-timer@cache-timer`
 
 Set these from the plugin's configuration in Claude Code.
 
-| Option | Default | Description |
-|---|---|---|
-| `style` | `fuse` | `fuse` (draining bar), `rule` (colored line above the prompt), `ember` (glyph beside the spinner) |
-| `maxLines` | 2 | Lines the timer may use above the prompt, 1 to 3 |
-| `cacheTtl` | `auto` | `auto`, `5m`, or `1h`. See below |
-| `debug` | false | Write diagnostic lines to the debug log (`claude --debug-file`) |
-| `keepwarmEnabled` | false | Allow `/keepwarm` |
-| `keepwarmDefaultMinutes` | 30 | Duration when `/keepwarm` is run with no number |
-| `keepwarmMaxMinutes` | 60 | Longest single `/keepwarm` run |
-| `keepwarmMaxPings` | 12 | Most pings one run may send |
-| `keepwarmMaxSpendUsd` | 1 | Stops a run once its pings have cost this much |
+| Option                   | Default | Description                                                                                       |
+| ------------------------ | ------- | ------------------------------------------------------------------------------------------------- |
+| `style`                  | `fuse`  | `fuse` (draining bar), `rule` (colored line above the prompt), `ember` (glyph beside the spinner) |
+| `maxLines`               | 2       | Lines the timer may use above the prompt, 1 to 3                                                  |
+| `cacheTtl`               | `auto`  | `auto`, `5m`, or `1h`. See below                                                                  |
+| `debug`                  | false   | Write diagnostic lines to the debug log (`claude --debug-file`)                                   |
+| `keepwarmEnabled`        | false   | Allow `/keepwarm`                                                                                 |
+| `keepwarmDefaultMinutes` | 30      | Duration when `/keepwarm` is run with no number                                                   |
+| `keepwarmMaxMinutes`     | 60      | Longest single `/keepwarm` run                                                                    |
+| `keepwarmMaxPings`       | 12      | Most pings one run may send                                                                       |
+| `keepwarmMaxSpendUsd`    | 1       | Stops a run once its pings have cost this much                                                    |
 
 ## Cache lifetime (5 minutes or 1 hour)
 
@@ -73,13 +73,13 @@ price), so it pays off if you often pause for more than 5 minutes, not for stead
 
 Off unless `keepwarmEnabled` is true. Every limit has a ceiling in code that no setting can raise.
 
-| Limit | Default | Ceiling | Notes |
-|---|---|---|---|
-| Minutes per run | 30 (default), 60 (max) | 90 | `/keepwarm 45` is clamped to the max |
-| Session allowance | 2 x the max | 2 x 90 | blocks re-arming in a loop; restart Claude Code to reset |
-| Pings per run | 12 | 20 | one ping about every 4:30 |
-| Spend per run | $1.00 | $5.00 | measured from session cost; if cost cannot be measured, it stops after the first ping |
-| Plan limit | stops at 80% | fixed | |
+| Limit             | Default                | Ceiling | Notes                                                                                 |
+| ----------------- | ---------------------- | ------- | ------------------------------------------------------------------------------------- |
+| Minutes per run   | 30 (default), 60 (max) | 90      | `/keepwarm 45` is clamped to the max                                                  |
+| Session allowance | 2 x the max            | 2 x 90  | blocks re-arming in a loop; restart Claude Code to reset                              |
+| Pings per run     | 12                     | 20      | one ping about every 4:30                                                             |
+| Spend per run     | $1.00                  | $5.00   | measured from session cost; if cost cannot be measured, it stops after the first ping |
+| Plan limit        | stops at 80%           | fixed   |                                                                                       |
 
 It also stops when you type a prompt, when two pings fail, when the cache is already cold, and at session end.
 It never pings while a turn is running, and on a 1-hour cache it declines breaks under 50 minutes. Each ping asks
@@ -105,6 +105,14 @@ Rules for editing `register.mjs` (the Claude Code validator enforces these):
 - `$` may be written only as `$.noun.event(...)` or passed to a function declared at the top level of the file.
   No `fn($)` through a variable, no helper functions nested inside `register()`.
 - `on` is always `on("<literal event>", hook)`. Register each event once per matcher.
+
+## Releasing
+
+Users only receive an update when `version` in `plugin/.claude-plugin/plugin.json` changes, so every release bumps it.
+
+1. Run the **Prepare release** workflow (Actions tab) and choose `patch`, `minor` or `major`. It opens a PR that bumps the version.
+2. Merge that PR into `development`, then open a PR from `development` into `main` and merge it.
+3. The **Release** workflow sees the new version on `main`, tags `vX.Y.Z`, and publishes a GitHub Release with generated notes.
 
 ## Status
 

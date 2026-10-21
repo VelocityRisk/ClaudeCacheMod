@@ -1,0 +1,51 @@
+name: Prepare release
+# Run manually (Actions tab > Prepare release). Opens a PR that bumps the plugin version.
+# Needs Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: development
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Bump version in plugin.json
+        id: v
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            const f = 'plugin/.claude-plugin/plugin.json';
+            const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+            const [a, b, c] = j.version.split('.').map(Number);
+            j.version = process.env.BUMP === 'major' ? (a + 1) + '.0.0' : process.env.BUMP === 'minor' ? a + '.' + (b + 1) + '.0' : a + '.' + b + '.' + (c + 1);
+            fs.writeFileSync(f, JSON.stringify(j, null, 2) + '\n');
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, 'version=' + j.version + '\n');
+          "
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "release/v$VERSION"
+          git commit -am "Release v$VERSION"
+          git push -u origin "release/v$VERSION"
+          gh pr create --base development --head "release/v$VERSION" \
+            --title "Release v$VERSION" \
+            --body "Bumps the plugin version to $VERSION. Once this is merged and development is merged to main, the release is published."
